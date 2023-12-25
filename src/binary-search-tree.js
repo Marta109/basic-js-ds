@@ -55,14 +55,12 @@ class BinarySearchTree {
   has(data) {
     let current = this.rootNode;
     while (current) {
-      if (current.data == data) {
+      if (current.data === data) {
         return true;
+      } else if (current.data < data) {
+        current = current.right;
       } else {
-        if (current.data < data) {
-          current = current.right;
-        } else {
-          current = current.left;
-        }
+        current = current.left;
       }
     }
     return false;
@@ -88,20 +86,54 @@ class BinarySearchTree {
     if (!this.rootNode) {
       return null;
     }
+    this.rootNode = this.removeNode(this.rootNode, data);
+    // let current = this.rootNode;
+    // while (current) {
+    //   if (current.data == data) {
+    //     if (current.right) {
+    //       current = current.right.right;
+    //       return;
+    //     } else {
+    //       current = current.left.left;
+    //       return;
+    //     }
+    //   } else {
+    //     if (current.data < data) {
+    //       current = current.right;
+    //     } else {
+    //       current = current.left;
+    //     }
+    //   }
+    // }
+  }
 
-    let current = this.rootNode;
-    while (current) {
-      if (current.data == data) {
-        current.data = current.data.data;
-        return;
-      } else {
-        if (current.data < data) {
-          current = current.right;
-        } else {
-          current = current.left;
-        }
+  removeNode(node, data) {
+    if (node === null) {
+      return null;
+    } else if (data < node.data) {
+      node.left = this.removeNode(node.left, data);
+      return node;
+    } else if (data > node.data) {
+      node.right = this.removeNode(node.right, data);
+      return node;
+    } else {
+      if (node.left === null) {
+        return node.right;
+      } else if (node.right === null) {
+        return node.left;
       }
+      node.data = this.findMinNode(node.right);
+      node.right = this.removeNode(node.right, node.data);
+      return node;
     }
+  }
+
+  findMinNode(node) {
+    let current = node;
+    while (current.left !== null) {
+      current = current.left;
+    }
+    return current.data;
   }
 
   min() {
